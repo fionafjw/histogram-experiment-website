@@ -44,6 +44,10 @@ img.fig { max-width: 100%; height: auto; margin: 1rem 0; display: block; border:
 .tablist .tab[aria-selected="true"] { background: #fcfcfc; border-color: #ccc; border-bottom-color: #fcfcfc; margin-bottom: -2px; padding-bottom: calc(0.45rem + 2px); font-weight: 600; }
 .tab-panel { padding: 1rem 0 2rem; }
 .tab-panel h2.tab-heading { margin-top: 0.5rem; }
+.method-overview { line-height: 1.6; margin-bottom: 1.75rem; max-width: 52rem; }
+.method-overview h3 { font-size: 1rem; margin: 1.1rem 0 0.4rem; font-weight: 600; }
+.method-overview ol, .method-overview ul { margin: 0.4rem 0 0.6rem 1.2rem; }
+.method-overview li { margin: 0.3rem 0; }
 </style>
 </head>
 <body>
@@ -56,6 +60,31 @@ img.fig { max-width: 100%; height: auto; margin: 1rem 0; display: block; border:
 </div>
 
 <section id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" class="tab-panel">
+<div class="method-overview">
+<h2>Experiments and this report</h2>
+<p>This page summarizes one <b>answerability probing</b> run. A small <b>linear probe</b> reads the <b>target model’s hidden states</b> (at one layer and one prompt token) and assigns a real-valued <code>probe_logit</code> to each example. That score is <em>not</em> the main model’s free-form answer; it is a separate classifier trained to separate answerable vs unanswerable items in the dataset.</p>
+
+<h3>How the experiment was built</h3>
+<p>Implemented in <code>histogram_experiment.py</code> (GPU / model code path):</p>
+<ol>
+<li><b>Inputs</b> — Answerable and unanswerable question sets with stored generations and tokenized input–output IDs (from your upstream generation pipeline).</li>
+<li><b>Train / test split</b> — Within each class, examples are shuffled (fixed seed), then split into a <b>training pool</b> and a <b>held-out test pool</b> used only for scoring and this report. Sizes are set in <code>histogram_experiment.main()</code> (defaults in the repo: 800 train and 600 test rows <em>per class</em>).</li>
+<li><b>Probe selection</b> — For each pair of <b>layer</b> and <b>prompt-side token</b> in a fixed grid, prompt activations are extracted and a <b>logistic regression</b> is tuned; the pair with best <b>validation AUC</b> is chosen, then the classifier is refit on the full training pool and saved (<code>probe_state.pkl</code>, <code>probe_selection.json</code>).</li>
+<li><b>Scoring</b> — The same probe is applied to the test split; each row gets <code>probe_logit</code> (the sklearn <code>decision_function</code>, i.e. log-odds margin before the sigmoid). By convention here, <b>predict answerable iff <code>probe_logit</code> &gt; 0</b>.</li>
+<li><b>Export</b> — Results are written to <code>scores.csv</code> together with <code>dataset_label</code>, question, model answer, and the eval column (<code>output_label</code> or <code>model_output_label</code>). Optional density histograms can be produced in the same script.</li>
+</ol>
+
+<h3>How this webpage was built</h3>
+<p><code>histogram_experiment_webpage.py</code> reads <code>scores.csv</code>, recomputes summary statistics, builds equal-width logit bins (default 24), writes PNG figures next to <code>index.html</code>, and embeds per-bin example rows as JSON (base64) for the interactive table.</p>
+
+<h3>The three tabs</h3>
+<ul>
+<li><b>Overview</b> (this tab) — Short narrative (above), the <b>Summary</b> metrics, and the <b>Probe vs dataset</b> HTML table (counts and row/column/overall fractions for probe decisions at threshold 0 vs <code>dataset_label</code>).</li>
+<li><b>Score bin explorer</b> — Stacked <b>counts</b> per logit bin (orange = GT-unanswerable, blue = GT-answerable); pick a bin to inspect rows, toggle full question/answer text, filter by GT or eval, and see GT/eval cells color-coded.</li>
+<li><b>Unanswerable questions histogram</b> — Restricted to <code>dataset_label = unanswerable</code>: overlapping density of <code>probe_logit</code> for rows graded <code>INCORRECT</code> (model answered when it should not) vs other eval labels (abstain / correct bucket).</li>
+</ul>
+<p class="small"><b>Source CSV for this page:</b> <code>../scores.csv</code></p>
+</div>
 <h2>Summary</h2>
 <ul class="summary">
 <li>Fraction of answerable questions with logit &gt; 0: 0.8800 (n=600)</li>
