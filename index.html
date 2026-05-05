@@ -114,6 +114,12 @@ img.fig { max-width: 100%; height: auto; margin: 1rem 0; display: block; border:
 <h2 class="tab-heading">(3) Answer vs abstain distribution within unanswerable questions</h2>
 <p class="small">Red = eval <code>INCORRECT</code> (model answered wrongly). Green = eval <code>CORRECT</code> (typically abstention). Expectation: answered tends to higher logits; abstain/correct lower.</p>
 <img class="fig" src="unanswerable_answer_vs_abstain.png" alt="unanswerable answered vs abstain histogram"/>
+
+<p class="small"><b>(4) Answerable-only.</b> Blue = eval <code>CORRECT</code>; purple = eval <code>INCORRECT</code>.</p>
+<img class="fig" src="answerable_correct_vs_incorrect.png" alt="answerable-only: correct vs incorrect"/>
+
+<p class="small"><b>(5) All four categories.</b> Overlay of unanswerable+abstain/correct, unanswerable+answered, answerable+incorrect, and answerable+correct.</p>
+<img class="fig" src="all_histogram.png" alt="all four categories overlaid"/>
 </section>
 
 <script>
