@@ -56,7 +56,8 @@ img.fig { max-width: 100%; height: auto; margin: 1rem 0; display: block; border:
 <div class="tablist" role="tablist" aria-label="Result sections">
 <button type="button" class="tab" role="tab" id="tab-overview" aria-selected="true" aria-controls="panel-overview">Overview</button>
 <button type="button" class="tab" role="tab" id="tab-bins" aria-selected="false" aria-controls="panel-bins" tabindex="-1">Score bin explorer</button>
-<button type="button" class="tab" role="tab" id="tab-unans" aria-selected="false" aria-controls="panel-unans" tabindex="-1">Unanswerable questions histogram</button>
+<button type="button" class="tab" role="tab" id="tab-unans-beh" aria-selected="true" aria-controls="panel-unans-beh">Unanswerable behavior</button>
+<button type="button" class="tab" role="tab" id="tab-unans" aria-selected="false" aria-controls="panel-unans" tabindex="-1">Eval-label histograms</button>
 </div>
 
 <section id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" class="tab-panel">
@@ -110,10 +111,22 @@ img.fig { max-width: 100%; height: auto; margin: 1rem 0; display: block; border:
 </table>
 </section>
 
+<section id="panel-unans-beh" role="tabpanel" aria-labelledby="tab-unans-beh" class="tab-panel">
+<h2 class="tab-heading">Unanswerable-only behavior vs logit bins</h2>
+<p class="small">Filter to <code>dataset_label = unanswerable</code>, bin the probe logits, and compute per-bin rates. Red line = incorrect-answer rate (eval <code>INCORRECT</code>), green line = abstain/correct rate. Dashed black = logistic fit for <code>P(incorrect)</code>. Gray bars (faint, right axis) show bin counts.</p>
+<ul class="summary">
+<li>Unanswerable examples: 600</li>
+<li>Non-empty bins used: 18</li>
+<li>Logistic coefficient on probe logit: 0.467610</li>
+<li>AUC for separating incorrect vs abstain/correct by logit: 0.7948</li>
+</ul>
+<img class="fig" src="unanswerable_behavior.png" alt="unanswerable-only bin behavior with rates and logistic fit"/>
+</section>
+
 <section id="panel-unans" role="tabpanel" aria-labelledby="tab-unans" class="tab-panel" hidden>
-<h2 class="tab-heading">(3) Answer vs abstain distribution within unanswerable questions</h2>
-<p class="small">Red = eval <code>INCORRECT</code> (model answered wrongly). Green = eval <code>CORRECT</code> (typically abstention). Expectation: answered tends to higher logits; abstain/correct lower.</p>
-<img class="fig" src="unanswerable_answer_vs_abstain.png" alt="unanswerable answered vs abstain histogram"/>
+<h2 class="tab-heading">Eval-label histogram comparisons</h2>
+<p class="small"><b>(3) Unanswerable-only.</b> Red = eval <code>INCORRECT</code> (answered when it should not); green = abstain/correct bucket.</p>
+<img class="fig" src="unanswerable_answer_vs_abstain.png" alt="unanswerable-only: answered vs abstain-or-correct"/>
 
 <p class="small"><b>(4) Answerable-only.</b> Blue = eval <code>CORRECT</code>; purple = eval <code>INCORRECT</code>.</p>
 <img class="fig" src="answerable_correct_vs_incorrect.png" alt="answerable-only: correct vs incorrect"/>
