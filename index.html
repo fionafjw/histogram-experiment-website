@@ -71,13 +71,26 @@ img.fig { max-width: 100%; height: auto; margin: 1rem 0; display: block; border:
 <li>The probe agrees with true answerability (treat as answerable iff <code>probe_logit</code> &gt; 0) on about 0.8717 of questions.</li>
 </ul>
 <h2>Probe vs dataset (counts and fractions)</h2>
-<p class="small"><b>Rows</b> = <code>dataset_label</code>. <b>Columns</b> = probe decision from <code>probe_logit</code> (answerable iff logit &gt; 0). Each body cell: <b>count</b>, then fraction of that <em>dataset row</em>, of that <em>probe column</em>, and of <em>all examples</em>. Diagonal = agreement with the dataset.</p>
 <table class="bin-ex probe-grid" aria-label="probe versus dataset counts">
 <thead><tr><th>Dataset \ Probe</th><th>logit ≤ 0, unanswerable</th><th>logit &gt; 0, answerable</th><th>Row total</th></tr></thead>
 <tbody>
 <tr><th scope="row">unanswerable</th><td class="num">518<br><span class="small">86.3% of row · 87.8% of column · 43.2% of all</span></td><td class="num">82<br><span class="small">13.7% of row · 13.4% of column · 6.8% of all</span></td><td class="num">600</td></tr>
 <tr><th scope="row">answerable</th><td class="num">72<br><span class="small">12.0% of row · 12.2% of column · 6.0% of all</span></td><td class="num">528<br><span class="small">88.0% of row · 86.6% of column · 44.0% of all</span></td><td class="num">600</td></tr>
 <tr><th scope="row">Column total</th><td class="num">590</td><td class="num">610</td><td class="num">1200</td></tr>
+</tbody>
+</table>
+<h2>Counts of Examples with Probe Score by Answerability and Correctness Evaluation Label</h2>
+<table class="bin-ex probe-grid" aria-label="four categories versus probe threshold">
+<thead><tr>
+<th>Category</th>
+<th>Total Examples</th>
+<th># probe logit &gt; 0</th>
+<th># probe logit ≤ 0</th>
+<th>% logit &gt; 0</th>
+<th>% logit ≤ 0</th>
+</tr></thead>
+<tbody>
+<tr><th scope="row">answerable + correct</th><td class="num">587</td><td class="num">521</td><td class="num">66</td><td class="num">88.8%</td><td class="num">11.2%</td></tr><tr><th scope="row">answerable + incorrect</th><td class="num">13</td><td class="num">5</td><td class="num">8</td><td class="num">38.5%</td><td class="num">61.5%</td></tr><tr><th scope="row">unanswerable + correct</th><td class="num">346</td><td class="num">5</td><td class="num">341</td><td class="num">1.4%</td><td class="num">98.6%</td></tr><tr><th scope="row">unanswerable + incorrect</th><td class="num">254</td><td class="num">78</td><td class="num">176</td><td class="num">30.7%</td><td class="num">69.3%</td></tr>
 </tbody>
 </table>
 </section>
